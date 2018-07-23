@@ -16,4 +16,4 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   // TODO: respond with an entry from the cache if there is one.
   // If there isn't, fetch from the network.
-});
+  // Be sure to call event.respondWith synchronously, not within a promise handler
