@@ -5,7 +5,10 @@ self.addEventListener('fetch', function(event) {
         // TODO: instead, respond with the gif at
         // /imgs/dr-evil.gif
         // using a network request
-        return new Response("Whoops, not found");
+        return fetch('/imgs/dr-evil.gif');
+        // .then(function(img) {  // this part is not really needed; fetch returns a promise
+        //   return img;          // whose resolved value will be passed to the outer promise
+        // });
       }
       return response;
     }).catch(function() {
