@@ -40,3 +40,9 @@ self.addEventListener('fetch', function(event) {
 
 // TODO: listen for the "message" event, and call
 // skipWaiting if you get the appropriate message
+self.addEventListener('message', function(event) {
+  console.log(event);
+  if (event.data.message === 'refresh page') {
+    self.skipWaiting();
+  }
+});
