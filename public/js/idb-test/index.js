@@ -1,14 +1,18 @@
+/* eslint no-fallthrough: 0 */
+
 import idb from 'idb';
 
-var dbPromise = idb.open('test-db', 2, function(upgradeDb) {
+var dbPromise = idb.open('test-db', 3, function(upgradeDb) {
   switch(upgradeDb.oldVersion) {
     case 0:
       var keyValStore = upgradeDb.createObjectStore('keyval');
       keyValStore.put("world", "hello");
       // break; —we specifically DON'T want a break in these cases
-      // eslint-disable-next-line no-fallthrough
     case 1:
       upgradeDb.createObjectStore('people', {keyPath: 'name'});
+    case 2:
+      var peopleStore = upgradeDb.transaction.objectStore('people');
+      peopleStore.createIndex('animal', 'favoriteAnimal');
   }
 });
 
@@ -79,8 +83,9 @@ dbPromise.then(function(db) {
 dbPromise.then(function(db) {
   var tx = db.transaction('people');
   var peopleStore = tx.objectStore('people');
+  var animalIndex = peopleStore.index('animal');
 
-  return peopleStore.getAll();
+  return animalIndex.getAll();
 }).then(function(people) {
   console.log('People:', people);
 });
