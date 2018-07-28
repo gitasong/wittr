@@ -85,7 +85,7 @@ dbPromise.then(function(db) {
   var peopleStore = tx.objectStore('people');
   var animalIndex = peopleStore.index('animal');
 
-  return animalIndex.getAll();
+  return animalIndex.getAll('tarsier');
 }).then(function(people) {
   console.log('People:', people);
 });
