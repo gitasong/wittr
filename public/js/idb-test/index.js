@@ -42,3 +42,36 @@ dbPromise.then(function(db) {
 }).then(function() {
   console.log('Added favoriteAnimal:kangaroo to keyval');
 });
+
+dbPromise.then(function(db) {
+  var tx = db.transaction('people', 'readwrite');
+  var peopleStore = tx.objectStore('people');
+
+  peopleStore.put({
+    name: 'Sam Munoz',
+    age: 25,
+    favoriteAnimal: 'dog'
+  });
+
+  peopleStore.put({
+    name: 'Hector Elizondo',
+    age: 57,
+    favoriteAnimal: 'tarsier'
+  });
+
+  peopleStore.put({
+    name: 'Alison Janney',
+    age: 54,
+    favoriteAnimal: 'giraffe'
+  });
+
+  peopleStore.put({
+    name: 'Fred Lewis',
+    age: 35,
+    favoriteAnimal: 'hippopotamus'
+  });
+
+  return tx.complete;
+}).then(function() {
+  console.log('People added');
+});
