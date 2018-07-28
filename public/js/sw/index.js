@@ -6,7 +6,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
-        '/',
+        '/skeleton',
         'js/main.js',
         'css/main.css',
         'imgs/icon.png',
@@ -35,6 +35,17 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   // TODO: respond to requests for the root page with
   // the page skeleton from the cache
+  let requestURL = new URL(event.request.url);
+
+  if (requestURL.origin === location.origin) {
+    if (requestURL.pathname === '/') {
+      event.respondWith(
+        caches.match('/skeleton').then(function(response) {
+          return response;
+        })
+      );
+    }
+  }
 
   event.respondWith(
     caches.match(event.request).then(function(response) {
