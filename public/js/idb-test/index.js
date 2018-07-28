@@ -75,3 +75,12 @@ dbPromise.then(function(db) {
 }).then(function() {
   console.log('People added');
 });
+
+dbPromise.then(function(db) {
+  var tx = db.transaction('people');
+  var peopleStore = tx.objectStore('people');
+
+  return peopleStore.getAll();
+}).then(function(people) {
+  console.log('People:', people);
+});
