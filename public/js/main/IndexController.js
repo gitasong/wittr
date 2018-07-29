@@ -151,6 +151,13 @@ IndexController.prototype._onSocketMessage = function(data) {
 
     // TODO: put each message into the 'wittrs'
     // object store.
+    var tx = db.transaction('wittrs', 'readwrite');
+    var postsStore = tx.objectStore('wittrs');
+    messages.forEach(function(message) {
+      postsStore.put(message);
+    });
+  }).then(function() {
+    console.log("Messages added to database");
   });
 
   this._postsView.addPosts(messages);
