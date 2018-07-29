@@ -98,7 +98,11 @@ dbPromise.then(function(db) {
   var peopleStore = tx.objectStore('people');
   var ageIndex = peopleStore.index('age');
 
-  return ageIndex.getAll();
-}).then(function(peopleByAge) {
-  console.log('People by age:', peopleByAge);
+  return ageIndex.openCursor();
+}).then(function logPerson(cursor) {
+  if (!cursor) return;
+  console.log('Cursored at:', cursor.value.name);
+  return cursor.continue().then(logPerson);
+}).then(function() {
+  console.log('Done cursoring');
 });
