@@ -16,6 +16,20 @@ function openDatabase() {
   // that uses 'id' as its key
   // and has an index called 'by-date', which is sorted
   // by the 'time' property
+  return idb.open('wittr', 1, function(upgradeDb) {
+    var postsStore = upgradeDb.createObjectStore('wittrs', {keyPath: 'id'});
+    postsStore.createIndex('by-date', 'time');
+  });
+
+  // dbPromise.then(function(db) {
+  //   var tx = db.transaction('wittrs');
+  //   var postsStore = tx.objectStore('wittrs');
+  //   var dateIndex = postsStore.createIndex('by-date', 'time');
+  //
+  //   dateIndex.getAll();
+  // }).then(function(postsByDate) {
+  //   console.log(postsByDate);
+  // });
 }
 
 export default function IndexController(container) {
