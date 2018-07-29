@@ -24,7 +24,7 @@ export default function IndexController(container) {
   this._toastsView = new ToastsView(this._container);
   this._lostConnectionToast = null;
   this._openSocket();
-  this._dbPromise = openDatabase();
+  this._dbPromise = openDatabase();  // creates promise for database by calling openDatabase()
   this._registerServiceWorker();
 }
 
