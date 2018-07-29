@@ -99,6 +99,9 @@ dbPromise.then(function(db) {
   var ageIndex = peopleStore.index('age');
 
   return ageIndex.openCursor();
+}).then(function(cursor) {
+  if (!cursor) return;
+  return cursor.advance(2);
 }).then(function logPerson(cursor) {
   if (!cursor) return;
   console.log('Cursored at:', cursor.value.name);
