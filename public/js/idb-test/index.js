@@ -1,3 +1,5 @@
+/* eslint-disable no-fallthrough */
+
 import idb from 'idb';
 
 var dbPromise = idb.open('test-db', 4, function(upgradeDb) {

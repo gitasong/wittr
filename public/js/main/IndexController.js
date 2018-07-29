@@ -1,3 +1,5 @@
+/* eslint-disable no-fallthrough */
+
 import PostsView from './views/Posts';
 import ToastsView from './views/Toasts';
 import idb from 'idb';
