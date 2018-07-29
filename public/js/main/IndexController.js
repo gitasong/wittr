@@ -114,5 +114,6 @@ IndexController.prototype._openSocket = function() {
 // called when the web socket sends message data
 IndexController.prototype._onSocketMessage = function(data) {
   var messages = JSON.parse(data);
+  console.log(messages);
   this._postsView.addPosts(messages);
 };
