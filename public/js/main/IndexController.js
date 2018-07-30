@@ -82,6 +82,13 @@ IndexController.prototype._showCachedMessages = function() {
     // in order of date, starting with the latest.
     // Remember to return a promise that does all this,
     // so the websocket isn't opened until you're done!
+    var tx = db.transaction('wittrs');
+    var postsStore = tx.objectStore('wittrs');
+    var dateIndex = postsStore.index('by-date');
+    // var dateIndex = db.transaction('wittrs').objectStore('wittrs').index('by-date');  //shorter version
+    return dateIndex.getAll().then(function(messages) {  // NOTE PLACEMENT OF .THEN()
+      indexController._postsView.addPosts(messages.reverse());
+    });
   });
 };
 
