@@ -162,13 +162,30 @@ IndexController.prototype._onSocketMessage = function(data) {
     messages.forEach(function(message) {
       store.put(message);
     });
+  });
 
-    // TODO: keep the newest 30 entries in 'wittrs',
-    // but delete the rest.
-    //
-    // Hint: you can use .openCursor(null, 'prev') to
-    // open a cursor that goes through an index/store
-    // backwards.
+  // TODO: keep the newest 30 entries in 'wittrs',
+  // but delete the rest.
+  //
+  // Hint: you can use .openCursor(null, 'prev') to
+  // open a cursor that goes through an index/store
+  // backwards.
+  this._dbPromise.then(function(db) {
+    if (!db) return;
+
+    var tx = db.transaction('wittrs', 'readwrite');
+    var store = tx.objectStore('wittrs');
+    var dateIndex = store.index('by-date');
+
+    return dateIndex.openCursor(null, 'prev');
+  }).then(function(cursor) {
+    if (!cursor) return;
+    return cursor.advance(30);
+  }).then(function deleteCursor(cursor) {
+    if (!cursor) return;
+    cursor.delete();
+    console.log("Deleted:", cursor.value.id);
+    return cursor.continue().then(deleteCursor);
   });
 
   this._postsView.addPosts(messages);
