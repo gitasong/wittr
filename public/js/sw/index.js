@@ -49,6 +49,9 @@ self.addEventListener('fetch', function(event) {
     }
     // TODO: respond to avatar urls by responding with
     // the return value of serveAvatar(event.request)
+    if (requestUrl.pathname.startsWith('/avatars/')) {
+      event.respondWith(serveAvatar(event.request));
+    }
   }
 
   event.respondWith(
@@ -71,6 +74,17 @@ function serveAvatar(request) {
   // to update the entry in the cache.
   //
   // Note that this is slightly different to servePhoto!
+  return caches.open(contentImgsCache).then(function(cache) {
+    return cache.match(storageUrl).then(function(response) {
+      if (response) return response;
+      var networkFetch = fetch(request).then(function(networkResponse) {
+        cache.put(storageUrl, networkResponse.clone());
+        return networkResponse;
+      });
+
+      return response || networkFetch;
+    });
+  });
 }
 
 function servePhoto(request) {
