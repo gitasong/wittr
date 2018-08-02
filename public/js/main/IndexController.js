@@ -161,9 +161,38 @@ IndexController.prototype._cleanImageCache = function() {
 
     // TODO: open the 'wittr' object store, get all the messages,
     // gather all the photo urls.
-    //
+
+    // photos in database: "/photos/4-3143-2917624963-c880bda926"
+    // photos in cache:
+    var photosToKeep = [];
+
+    var tx = db.transaction('wittrs');
+    var store = tx.objectStore('wittrs');
+    // var dateIndex = store.index('by-date');
+
+    store.getAll().then(function(messages) {
+      console.log('Messages from db: ', messages);
+      messages.forEach(function(message) {
+        if (!message.photo) return;
+        photosToKeep.push(message.photo);
+      });
+    });
     // Open the 'wittr-content-imgs' cache, and delete any entry
     // that you no longer need.
+    caches.open('wittr-content-imgs').then(function(cache) {
+      return cache.keys().then(function(images) {
+        console.log('Images from cache: ', images);
+        images.forEach(function(image) {
+          console.log('Current image: ', image);
+          var newURL = new URL(image.url);  // cache contains absolute URLs. Request objects don't have a pathname attribute, but URL objects do.
+          console.log('Current image new URL: ', newURL);
+          if (!photosToKeep.includes(newURL.pathname)) {
+            console.log('Deleting: ', image.url);
+            cache.delete(image);
+          }
+        });
+      });
+    });
   });
 };
 
